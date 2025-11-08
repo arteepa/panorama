@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panorama</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: #1a1a1a;
+        color: #cfc8bf;
+        font-family: "Courier New", Courier, monospace;
+        text-align: center;
+        padding: 5rem 0;
+      }
+      main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2.5rem;
+      }
+      img {
+        width: min(320px, 80vw);
+        height: auto;
+        display: block;
+      }
+      img.logo {
+        width: 180px;
+      }
+      .tagline {
+        font-size: 1.5rem;
+        letter-spacing: 0.05em;
+        color: #8b8580;
+        font-weight: bold;
+      }
+      .contact {
+        font-size: 1rem;
+        letter-spacing: 0.05em;
+        font-weight: bold;
+      }
+      a {
+        color: #cfc8bf;
+      }
+      a:hover,
+      a:focus {
+        color: #f5e9d8;
+      }
+      .insta-feed {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+      .insta-feed iframe {
+        width: 100%;
+        min-height: 600px;
+        border: none;
+        border-radius: 8px;
+        background: #2a2a2a;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        display: block;
+        transition: opacity 0.3s ease;
+      }
+      .insta-feed iframe.loading {
+        opacity: 0.7;
+      }
+      @media (max-width: 768px) {
+        .insta-feed {
+          padding: 0 0.5rem;
+        }
+        .insta-feed iframe {
+          min-height: 500px;
+        }
+        .tagline {
+          font-size: 1.2rem;
+          padding: 0 1rem;
+        }
+        .contact {
+          font-size: 0.9rem;
+          padding: 0 1rem;
+        }
+        main {
+          gap: 2rem;
+        }
+      }
+      @media (max-width: 480px) {
+        .insta-feed iframe {
+          min-height: 400px;
+        }
+        .tagline {
+          font-size: 1rem;
+        }
+        .contact {
+          font-size: 0.85rem;
+        }
+      }
+      .insta-fallback {
+        display: none;
+        text-align: center;
+        padding: 2rem;
+        background: #2a2a2a;
+        border-radius: 8px;
+        margin-top: 1rem;
+      }
+      .insta-fallback.show {
+        display: block;
+      }
+      .insta-fallback a {
+        display: inline-block;
+        margin-top: 1rem;
+        padding: 0.75rem 1.5rem;
+        background: #cfc8bf;
+        color: #1a1a1a;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: bold;
+        transition: background 0.3s ease;
+      }
+      .insta-fallback a:hover {
+        background: #f5e9d8;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img src="panorama-logo.png" alt="Panorama" class="logo" />
+      <p class="tagline">eventos, ideas y cultura alternativa local</p>
+      <p class="contact">
+        contáctanos x
+        <a href="https://www.instagram.com/panorama.obr" target="_blank" rel="noopener noreferrer">
+          instagram
+        </a>
+      </p>
+      <div class="insta-feed">
+        <iframe 
+          src="https://www.instagram.com/panorama.obr/embed" 
+          frameborder="0" 
+          scrolling="no"
+          allowtransparency="true"
+          allow="encrypted-media"
+          loading="lazy"
+          title="Instagram Feed"
+        ></iframe>
+        <div class="insta-fallback">
+          <p>Visita nuestro perfil de Instagram</p>
+          <a href="https://www.instagram.com/panorama.obr" target="_blank" rel="noopener noreferrer">
+            Ver en Instagram
+          </a>
+        </div>
+      </div>
+    </main>
+    <script>
+      // Handle Instagram feed loading and fallback
+      (function() {
+        const iframe = document.querySelector('.insta-feed iframe');
+        const fallback = document.querySelector('.insta-fallback');
+        
+        if (iframe && fallback) {
+          // Add loading class initially
+          iframe.classList.add('loading');
+          
+          // Check if iframe loads successfully
+          iframe.addEventListener('load', function() {
+            iframe.classList.remove('loading');
+            // Check if iframe has content (basic check)
+            try {
+              // If we can't access iframe content due to CORS, assume it loaded
+              // Instagram embeds typically work or show an error page
+              setTimeout(function() {
+                // If iframe height is very small, it might have failed
+                if (iframe.offsetHeight < 100) {
+                  fallback.classList.add('show');
+                }
+              }, 2000);
+            } catch (e) {
+              // CORS error is expected, but iframe likely loaded
+              iframe.classList.remove('loading');
+            }
+          });
+          
+          // Show fallback if iframe fails to load after timeout
+          setTimeout(function() {
+            if (iframe.offsetHeight < 100) {
+              fallback.classList.add('show');
+            }
+          }, 5000);
+          
+          // Handle error event
+          iframe.addEventListener('error', function() {
+            fallback.classList.add('show');
+            iframe.style.display = 'none';
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
+
